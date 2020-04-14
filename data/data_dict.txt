@@ -1,0 +1,19 @@
+Report.Number   		INT 		########	Unique record ID 
+Report.Date:    		DATE 		YY-MM-DD
+Occur.Date:     		DATE		YY-MM-DD
+Occur.Time      		DATETIME	HHMM
+Possible.Date			DATE		YY-MM-DD
+Possible.Time			DATEIME		HHMM
+Beat				INT		###		Location type data
+Appartment.Office.Prefix	TEXT		"""			
+Appartment.Number		INT		###		Number of the apt. 
+Location			VARCHAR		###"""		Address of location
+Shift.Occurence			VARCHAR		"""		Categorical time of day. 
+Location.Type			INT		##		Unclear.  Need the key. 
+UCR.Literal			TEXT		"""		Major category of crime. 
+UCR..				INT		###		Minor category of crime. 
+IBR.Code			VARCHAR		###"		Another minor code of crime. 
+Neighborhood			TEXT		"""		Name of neighborbood/area. 
+NPU				TEXT		"		Neighborhood planning units. 
+Latitude			FLOAT		##.#####	Latitude location of crime. 
+Longitude			FLOAT		##.####		Longitude location of crime. 
