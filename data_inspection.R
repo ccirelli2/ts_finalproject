@@ -51,3 +51,37 @@ viz_diff_smoothed <- function(data, difference, frequency){
   return(plt)
 }
   
+
+decomp <- function(data, frequency){
+  'Desc:   Decompose a time series
+   data:   data.frame that includes count of observations by feature variable. Ex date.cnt
+   return: decomposition of time series. '
+  ts  <- ts(data$n, start=c(2009, 01 ,01), end=c(2019, 12,31), frequency=frequency)
+  dcp <- decompose(ts)
+  return(dcp)
+}
+
+
+gen_seasonal_lots <- function(decomp, data, min, max){
+  ' Desc:  Generate 4 plots of the seasonality of a time series
+    decomp decomposition function defined in data_inspection script
+    min:   Minimum number of frequency
+    max:   Max number of frequency
+    Note:  Max - Min must not > 4
+  '
+  # Create 4 Plots on Single Pallet
+  par(mfrow=c(4,1))
+  # Iterate sequency of frequencies
+  for (i in seq(min, max)){
+    # Get results
+    result <- decomp(data, i)
+    # Plot
+    plot(result$seasonal, main=paste('TS - Plot of Seasonality At Frequency =', i))
+  } 
+  return()
+}
+
+
+
+
+

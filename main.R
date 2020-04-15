@@ -108,6 +108,25 @@ viz_season_v2(date.cnt.diff, 31)
 '
 viz_diff_smoothed(date.cnt, 1, 12)
 
+# Decomposition of Time Series ----------------------------------------------------------------------------
+' Observations:  
+  i.) Seaonality The frequency of the time series that provides for the cleanest visualization of the
+                 seasonality appears to be 6 months.  All other options between 7-12 months have 
+                 more eratic and less consistent seaonality plots. 
+  ii.) Trend     The trend seems to be less pronounced at 6 months than at 12.  This is likely due to the 
+                 fact that the trend occurs over annual periods and not bi-annually, which is what we 
+                 visualized in the earlier plots. 
+                 
+
+'
+# Decomposition (Observed, Trend, Seasonal, Random)
+plot(decomp(date.cnt, 6))
+
+# Seaonality Component
+gen_seasonal_lots(decomp, date.cnt, 6, 9)
+
+
+
 
 
 
@@ -122,18 +141,16 @@ viz_diff_smoothed(date.cnt, 1, 12)
 adf.test(date.cnt$n, k=0)
 
 
-# ACF & PACF Plots
-pacf(date.cnt$n)
-acf2(date.cnt$n)
+# ACF & PACF Plot 
+' ACF:  
+'
+ts <- ts(date.cnt$n, start=c(2009, 01 ,01), end=c(2019, 12,31), frequency=12)
+ts.diff <- diff(ts, 1)
 
-acf(date.cnt.diff)
-acf2(date.cnt.diff)
+acf(ts.diff)
+pacf(ts.diff)
 
-
-# Create Time Series
-#ts.date.cnt <- ts(date.cnt$n, start=c(2009, 01 ,01), end=c(2019, 12,31))
-
-
+plot(decompose(ts))
 
 
 
