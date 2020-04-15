@@ -11,16 +11,19 @@
 rm(list=ls())
 
 ## Load Libraries ---------------------------------------------------
-source('/home/cc2/Desktop/repositories/Time_Series/final_project/data/data_inspection.R')
+source('/home/cc2/Desktop/repositories/ts_finalproject/data_inspection.R')
 library(dplyr)
 library(ggplot2)
 library(astsa)
 library(forecast)
+library(Hmisc)
+library(tseries)
+
 
 ## Load Data --------------------------------------------------------
 ' data source:  http://opendataportal.azurewebsites.us/
   description:  Atlanta Crime Data'
-data <- read.csv('/home/cc2/Desktop/repositories/Time_Series/final_project/data/data.csv')
+data <- read.csv('/home/cc2/Desktop/repositories/ts_finalproject/data/data.csv')
 
 
 ## Data Inspection --------------------------------------------------
@@ -61,7 +64,13 @@ min(data.at$Year)
 summary(data.at)
 
 
-# Plot Data
+
+
+# Visualize Data -----------------------------------------------------------------------------------------
+' Observations:  Vizualizing the monthly plot reveals what appears to be a cycle that repeats every 
+                 6 months.  From February to July auto thefts show a constant increase until a pique in 
+                 July.  From July to January shows a stretched out parabola shape (elongated u shape). 
+'
 date.cnt  <- data.at %>% group_by(Occur.Date) %>% tally()
 yr.cnt    <- data.at %>% group_by(Year) %>% tally()
 month.cnt <- data.at %>% group_by(Month) %>% tally()
@@ -73,44 +82,47 @@ plt.month <- ggplot(month.cnt, aes(x=Month, y=n)) + geom_bar(stat='identity') + 
 plt.day   <- ggplot(day.cnt, aes(x=Day, y=n)) + geom_bar(stat='identity') + ggtitle("Count of Auto Thefts By Day")
 plt.hour  <- ggplot(hour.cnt, aes(x=Hour, y=n)) + geom_bar(stat='identity') + ggtitle("Count of Auto Thefts By Hour")
 
-
-# Seasonality ---------------------------------------------------------------------------------------------
-ts.date.cnt <- ts(date.cnt$n, start=c(2009, 01 ,01), end=c(2019, 12,31), frequency=31)
-ggseasonplot(ts.date.cnt, main='Seasonal Plot - AutoTheft - Frequency =31')
-
-# Take Difference to remove trend -------------------------------------------------------------------------
-date.cnt.diff <- diff(date.cnt$n, 1)
-ts.date.cnt.diff <- ts(date.cnt.diff, start=c(2009, 01 ,01), end=c(2019, 12,31), frequency=12)
-ggseasonplot(ts.date.cnt.diff, main='Seasonal Plot - AutoTheft - Frequency =31')
-plot(y=date.cnt.diff, x=seq(1, length(date.cnt.diff)), 'l', main='Plot of Daily Time Series - Differencing of 1')
-
-# Apply Smoothing to Differenced Time Series
-' Mean & Variance are clearly not constant'
-date.cnt.diff <- diff(date.cnt$n, 1)
-ts.date.cnt.diff.smooth <- ts(date.cnt.diff.smoothed, start=c(2009, 01 ,01), end=c(2019, 12,31), frequency=31)
-ggseasonplot(ts.date.cnt.diff.smooth, main='Seasonal Plot | AutoTheft | Frequency =12')
+# Plots that show 6 month cycle
+plt.month
 plot(x=seq(1,length(month.cnt$n)), y=month.cnt$n, 'l')
 
-# Average Monthly Count By All Years
-mu_cnt.month <- month.cnt$n/31
-plot(x=seq(1,12), y=(mu_cnt.month))
 
-# Average Daily Count By All Years
-mu_cnt.day <- day.cnt$n/31
-plot(x=seq(1,31), y=(mu_cnt.day))
 
-# Observations 
-' Trend
-  Seasonality
-  Cyclicality
-  Holidays
-
+# Seasonality ---------------------------------------------------------------------------------------------
+' Observations:  The cycles are hard to vizualize for each series.   
+                 For some months there seems to be a cyclicality for a 6 month period that looks like a 
+                 parabola
 '
+viz_season_v1(date.cnt, 6)
+
+
+# Take Difference to remove trend -------------------------------------------------------------------------
+' Observations:  No material differences in plot.  Still difficult to vizualize. 
+'
+viz_season_v2(date.cnt.diff, 31)
+
+
+# Apply Smoothing to Differenced Time Series --------------------------------------------------------------
+' Observations:  Mean & Variance are clearly not constant
+                 Sligthly easier to vizualize the cyclicality of the data.   
+'
+viz_diff_smoothed(date.cnt, 1, 12)
+
+
 
 
 # Stationarity - ACF & PACF Plots -------------------------------------------------------------------------
 
-acf(date.cnt$n)
+# Dickey Fuller Test
+'	Augmented Dickey-Fuller Test
+  data:  date.cnt$n
+  Dickey-Fuller = -48.161, Lag order = 0, p-value = 0.01
+  alternative hypothesis: stationary
+'
+adf.test(date.cnt$n, k=0)
+
+
+# ACF & PACF Plots
 pacf(date.cnt$n)
 acf2(date.cnt$n)
 
