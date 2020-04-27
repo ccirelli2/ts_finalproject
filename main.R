@@ -38,11 +38,18 @@ col_names
 head(data)
 
 
+## Plot All Data ---------------------------------------------------
+
+plot.comp.auto.all(data, col_names)
+
 # Inspection Auto Thefts
 AutoTheft   <- data$UCR.Literal=='AUTO THEFT'
 data.at     <- data[AutoTheft, c('Occur.Date', 'Occur.Time', 'Beat', 'Shift.Occurence', 'Location.Type', 
                         'Neighborhood', 'Latitude', 'Longitude')]
+
+
 summary(data.at)
+
 
 # Transform Columns 
 ' Observations:  The minimum of the occurance date is 1916, which does not comport with the

@@ -5,6 +5,37 @@
 # Import Libraries ------------------------------------
 library(hash)
 
+
+plot.comp.auto.all <- function(data, col_names){
+  # Add Year 
+  df$Year   <- format(as.Date(df$Occur.Date, '%Y-%m-%d'), "%Y")
+  min.yr    <- df$Year > 2008
+  df        <- df[min.yr, names(df)]
+  
+  # Get Count All Data By Data
+  ts_all <- df %>% group_by(Year) %>% tally()
+  
+  # Limit Copy Data Frame by Auto Sales
+  AutoTheft    <- df$UCR.Literal=='AUTO THEFT'
+  df.auto      <- df[AutoTheft, c(col_names)]
+  df.auto$Year <- format(as.Date(df.auto$Occur.Date, '%Y-%m-%d'), "%Y")
+  df.auto      <- df.auto %>% group_by(Year) %>% tally()
+  
+  # Combine Data
+  df_all = data.frame(ts_all, df.auto)
+  df_all$Year.1 <- NULL
+  df_all$All <- df_all$n
+  df_all$n <- NULL
+  df_all$Auto <- df_all$n.1
+  df_all$n.1 <- NULL
+  
+  barplot(df_all$All, names.arg=df_all$Year, main='Frequency All Crime')
+  bar(df_all$Auto, names.arg=df_all$Year, main='Frequency Auto Theft')
+}
+
+
+
+
 get_data_dict <- function(){
   data_dict <- hash()
   data_dict[["Report.Date"]]              <- c('INT', '########',	'Unique record ID')
