@@ -6,6 +6,10 @@ from fbprophet import Prophet
 ''' Desc: Script for fitting and generating predictions using
     the facebook prophet model.
     Ref:https://facebook.github.io/prophet/docs/quick_start.html#python-api
+
+    Improving model fit:
+        https://towardsdatascience.com/implementing-facebook-prophet-efficiently-c241305405a3
+
 '''
 
 
